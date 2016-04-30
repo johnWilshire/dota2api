@@ -2,7 +2,7 @@
 % Please edit documentation in R/dota2api.R
 \name{url_builder}
 \alias{url_builder}
-\title{builds a url for the dota 2 api}
+\title{Builds a url for the dota 2 api}
 \usage{
 url_builder(query, api_args, https, api = "IDOTA2Match_570",
   version = "V001")
@@ -10,16 +10,18 @@ url_builder(query, api_args, https, api = "IDOTA2Match_570",
 \arguments{
 \item{query}{A String The type of query to build GetMatchHistory or GetMatchDetails}
 
-\item{api_args}{A list of parameters for the query}
+\item{api_args}{A list of parameters for the query.}
 
-\item{https}{Logical if True: https, False: http}
+\item{https}{Logical, if True: https, False: http.}
 
-\item{api}{string: The api id}
+\item{api}{The string id of the api.}
+
+\item{version}{The string of the api version.}
 }
 \value{
-the url of the query
+The url of the query
 }
 \description{
-See: https://wiki.teamfortress.com/wiki/WebAPI
+See: \url{ttps://wiki.teamfortress.com/wiki/WebAPI}
 }
 
