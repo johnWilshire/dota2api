@@ -1,0 +1,13 @@
+Package: dota2api
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1
+Date: 2016-04-30
+Author: John Wilshire
+Maintainer: John Wilshire <john.h.wilshire@gmail.com>
+Description: More about what it does (maybe more than one line)
+License:
+LazyData: TRUE
+Suggests: testthat
+Imports:
+  jsonlite
