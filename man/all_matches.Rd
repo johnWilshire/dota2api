@@ -2,29 +2,33 @@
 % Please edit documentation in R/dota2api.R
 \name{all_matches}
 \alias{all_matches}
-\title{Get a all of a players matches}
+\title{Get all of a players availible match ids}
 \usage{
 all_matches(api_key, account_id, delay = 0.5, verbose = TRUE, ...)
 }
 \arguments{
 \item{api_key}{A String of your steam developer key, see: \url{https://steamcommunity.com/dev/apikey}}
 
-\item{account_id}{}
+\item{account_id}{The id of the account whose match id's we want.}
 
-\item{delay}{the ammount of time in seconds to wait between api calls}
+\item{delay}{The amount of time (in seconds) to wait between api calls.}
 
-\item{verbose}{#'}
+\item{verbose}{Print progress messages?
+#'}
 
 \item{...}{Query parameters, see: \url{http://wiki.teamfortress.com/wiki/WebAPI/GetMatchHistory}}
 }
 \value{
-A list of match ids that we are then able to gain futher information on
+A data frame of a players matches, with
+ a column of match ids. (Integer)
+ a column of start times, (Integer UNIX time)
+ a column of of lobby types
 }
 \description{
 Get a list of game ids that are availible for a player.
 The maximum number of games that steam remembers for a player is 500
 }
 \examples{
-all_matches(api_key = "<your key>", account_id = 12314141)
+all_matches(api_key = "<your key>", account_id = 122191358)
 }
 

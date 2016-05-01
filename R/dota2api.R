@@ -26,7 +26,7 @@ raw_match_details <- function (api_key, match_id, ...){
 }
 
 
-#' Get a all of a players matches
+#' Get all of a players availible match ids
 #'
 #' Get a list of game ids that are availible for a player.
 #' The maximum number of games that steam remembers for a player is 500
@@ -46,8 +46,8 @@ raw_match_details <- function (api_key, match_id, ...){
 #'
 #' @examples
 #'  all_matches(api_key = "<your key>", account_id = 122191358)
-all_matches <- function (api_key, account_id, delay = 0.5, verbose = TRUE, ...){
-  if (verbose) print("making first api call")
+all_matches <- function (api_key, account_id, delay = 1, verbose = TRUE, ...){
+  if (verbose) cat(paste("Making first api call, on account id", account_id, "\n"))
 
   first <- raw_match_history(api_key, account_id = account_id)
 
@@ -60,7 +60,7 @@ all_matches <- function (api_key, account_id, delay = 0.5, verbose = TRUE, ...){
 
   while(remaining_calls > 0) {
     Sys.sleep(delay)
-    if (verbose) print(paste("with", remaining_calls, "remaining"))
+    if (verbose) cat(paste("with", remaining_calls, "remaining", "\n"))
     first <- raw_match_history(api_key,
                                account_id = account_id,
                                start_at_match_id = min(output$match_id) - 1)
@@ -70,8 +70,63 @@ all_matches <- function (api_key, account_id, delay = 0.5, verbose = TRUE, ...){
                                      lobby_type = first$result$matches$lobby_type))
     remaining_calls <- remaining_calls - 1
   }
+  return(output)
+}
+
+#' Details
+#'
+#' Query the api for each match_id in match_ids,
+#' returns the results in a data.frame.
+#'
+#' @inheritParams match_details_url
+#' @param match_ids A list or a single match id that we will query the api with
+#' @param delay The amount of time (in seconds) to wait between api calls.
+#' @param simplify_colnames
+#' @param ... Additional arguments for the url builder.
+#'
+#' @return A data.frame of the match details
+#' @export
+#'
+#' @examples
+#' details(api_key = "<api_key>", match_ids = c(2331506594, 2331349045))
+details <- function(api_key, match_ids, verbose = TRUE, delay = 1, ...){
+  output <- jsonlite::rbind.pages(
+    lapply(match_ids,
+         function(id){
+           if(verbose) cat(paste("Getting details for match:",id, "\n"))
+           Sys.sleep(delay)
+           as.data.frame(
+             tryCatch(raw_match_details(api_key, match_id = id, ...),
+                      error = function(id){
+                        cat(paste(id, "failed\n"))
+                      }))
+         }))
+
+  # clean up the column names
+  colnames(output) <- gsub("result.|players.", "", colnames(output))
 
   return(output)
 }
+
+#' Convert 32-bit account id to a 64 bit Steam id
+#'
+#' Converts a 32-bit account id to a 64 bit Steam id that can be used to query
+#' api's that require the 64 bit steam id.
+#'
+#' @param account_id The 32 bit account id, can be numeric or character.
+#'
+#' @return A string representing a users 64 bit steam id.
+#' @export
+#'
+#' @examples
+#' account_to_steam(32500026)
+#'
+#'
+# see:
+# https://gist.github.com/almirsarajcic/4664387
+account_to_steam <- function (account_id){
+  paste0('765', as.integer(account_id) + 61197960265728)
+}
+
 
 
