@@ -131,5 +131,3 @@ account_to_steam <- function (account_id){
   paste0('765', as.integer(account_id) + 61197960265728)
 }
 
-
-
