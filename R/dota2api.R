@@ -88,9 +88,8 @@ all_matches <- function (api_key, account_id, delay = 1, verbose = TRUE, ...){
 #'
 #' @examples
 #' details(api_key = "<api_key>", match_ids = c(2331506594, 2331349045))
-details <- function(api_key, match_ids, verbose = TRUE, delay = 1, ...){
-  output <- jsonlite::rbind.pages(
-    lapply(match_ids,
+details <- function(api_key, match_ids, verbose = FALSE, delay = 1, ...){
+  output <- plyr::ldply(match_ids, .progress = progress_time(),
          function(id){
            if(verbose) cat(paste("Getting details for match:",id, "\n"))
            Sys.sleep(delay)
@@ -103,11 +102,15 @@ details <- function(api_key, match_ids, verbose = TRUE, delay = 1, ...){
                         # return an empty data.frame for this match
                         return(data.frame())
                       }))
-         }))
+         })
 
   # clean up the column names
   colnames(output) <- gsub("result.|players.", "", colnames(output))
 
+  # add some extra columns
+  output$date <- ymd_hms(as.POSIXct(output$start_time, origin="1970-01-01"))
+  output$team <- ifelse(output$player_slot < 100,  "Radiant", "Dire")
+  output$winner <- output$team == "Radiant" & output$radiant_win
   return(output)
 }
 
@@ -122,12 +125,33 @@ details <- function(api_key, match_ids, verbose = TRUE, delay = 1, ...){
 #' @export
 #'
 #' @examples
-#' account_to_steam(32500026)
+#' account_to_steam(76561198082457086)
 #'
 #'
 # see:
 # https://gist.github.com/almirsarajcic/4664387
 account_to_steam <- function (account_id){
   paste0('765', as.integer(account_id) + 61197960265728)
+}
+
+
+#' Convert a 64-bit Steam id into a 32-bit account id
+#'
+#' Convert a 64-bit Steam id into a 32-bit account id that can be used to query dota 2
+#' apis
+#'
+#' @param steam_id The 64 bit string steam id, must be a string (character) as otherwise.
+#'
+#' @return A string representing a users 64 bit steam id.
+#' @export
+#'
+#' @examples
+#' steam_to_account("76561197992765754")
+#'
+#'
+# see:
+# https://gist.github.com/almirsarajcic/4664387
+steam_to_account <- function (steam_id){
+  as.double(substr(steam_id, 4, nchar(steam_id))) - 61197960265728
 }
 

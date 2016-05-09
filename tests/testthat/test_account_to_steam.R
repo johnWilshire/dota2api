@@ -8,4 +8,6 @@ test_that( "account_to_steam", {
 
 
   expect_equal(account_to_steam(as.character(thirtytwo)), sixtyfour)
+
+  expect_equal(steam_to_account(as.character(sixtyfour)), thirtytwo)
 })

@@ -11,4 +11,5 @@ License: WTFPL
 LazyData: TRUE
 Suggests: testthat
 Imports:
-  jsonlite
+  jsonlite,
+  plyr
