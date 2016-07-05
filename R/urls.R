@@ -52,10 +52,10 @@ match_details_url <- function (api_key = api_key, match_id,  https = TRUE){
 #' @return  The url of the query
 #'
 #' @export
-url_builder <- function (query, api_args, https, api = "IDOTA2Match_570", version = "V001"){
+url_builder <- function (query, api_args, https, api = "IDOTA2Match_570", version = "v1"){
   paste0(ifelse(https, "https", "http"),
          "://api.steampowered.com/", api, "/",query,
-         "/", version ,"/?format=JSON&",
+         "/", version ,"/?",
          Reduce(
            function(x, y) paste(x, y, sep = "&"),
            paste(names(api_args), api_args, sep = "=")))

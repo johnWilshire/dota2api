@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' get_player_summaries(api_key = "<api_key>", account_ids = 122191358)
-get_player_summaries <- function(api_key = api_key, account_ids, delay = 0.5){
+get_player_summaries <- function(api_key = api_key, account_ids , delay = 0.5){
   output <- data.frame()
 
   # the api can only handle requests of 100 ids or less
